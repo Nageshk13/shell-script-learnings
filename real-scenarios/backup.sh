@@ -8,7 +8,7 @@ then
     exit 1
 fi
 
-backup_name="backup_$(date +%F_%H-%M-%S).tar.gz"
+backup_name="$file _$(date +%F_%H-%M-%S).tar.gz"
 
 tar -czf "$backup_name" "$file"
 
