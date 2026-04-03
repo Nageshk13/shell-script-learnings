@@ -1,32 +1,50 @@
 #!/bin/bash
 
-# 🔴 ADD HERE (input validation)
-if [ -z "$1" ] || [ -z "$2" ]; then
-    echo "Usage: $0 <service> {status|check}"
-    exit 1
-fi
+service=$1
+action=$2
 
-check-service() {
-    if systemctl is-active --quiet "$1"; then
-        echo "$1 is active"
+check_service() {
+    if systemctl is-active --quiet "$service"; then
+        echo "$service is running"
     else
-        echo "$1 is not active"
+        echo "$service is NOT running"
     fi
 }
 
-status-service() {
-    echo "Status of $1..."
-    sudo systemctl status "$1"
+start_service() {
+    sudo systemctl start "$service"
+    echo "$service started"
 }
 
-case $2 in
-    check)
-        check-service "$1"
-        ;;
+stop_service() {
+    sudo systemctl stop "$service"
+    echo "$service stopped"
+}
+
+restart_service() {
+    sudo systemctl restart "$service"
+    echo "$service restarted"
+}
+
+if [ -z "$service" ] || [ -z "$action" ]; then
+    echo "Usage: $0 <service> {status|start|stop|restart}"
+    exit 1
+fi
+
+case $action in
     status)
-        status-service "$1"
+        check_service
+        ;;
+    start)
+        start_service
+        ;;
+    stop)
+        stop_service
+        ;;
+    restart)
+        restart_service
         ;;
     *)
-        echo "Usage: $0 <service> {status|check}"
+        echo "Invalid action"
         ;;
 esac
